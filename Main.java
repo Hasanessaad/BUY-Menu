@@ -1,14 +1,13 @@
-import java.sql.SQLOutput;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String args[]) {
+    public static void main(String args[]) throws InterruptedException {
         List<Client> clients = new ArrayList<>();
         List<Order> orders = new ArrayList<>();
         Scanner myInput = new Scanner(System.in);
+        String Username;
 
         int option, option2;
         boolean exit = false;
@@ -25,7 +24,6 @@ public class Main {
             if (selecting == 1) {
                 System.out.println("1-Cadastrar");
                 System.out.println("2-Listar");
-
                 System.out.println("3-Search");
                 System.out.println("4-Fullfilled orders");
                 System.out.println("4-Sair");
@@ -51,7 +49,7 @@ public class Main {
                             int numb = myInput.nextInt();
                             addresses.add(new Address(street, numb));
                         }
-                        clients.add(new Client(name, age, addresses));
+                        clients.add(new Client(name, age, addresses , orders));
                         break;
                     case 2:
                         System.out.println("}-LISTAR-{");
@@ -97,7 +95,7 @@ public class Main {
 
                                 if (cho == 1) {
                                     System.out.print("Indicate the new name: ");
-                                    myInput.nextLine();
+                                    myInput.next();
                                     String newName = myInput.nextLine();
 
                                     List<Address> newAddresses = new ArrayList<>();
@@ -161,6 +159,7 @@ public class Main {
                     System.out.println("indicate your login name:");
                     myInput.nextLine();
                     String searchName1 = myInput.nextLine();
+                    Username = searchName1;
                     for (Client client : clients) {
                         if (client.getName().equalsIgnoreCase(searchName1)) {
                             System.out.println("}-CLIENTE ENCONTRADO-{");
@@ -187,8 +186,6 @@ public class Main {
                             int choice;
                             System.out.println("CHOOSE YOUR PRODUCT");
                             System.out.println("1-CELLPHONE");
-                            System.out.println("2-HEADPHONES");
-                            System.out.println("3-LAPTOPS");
                             choice = myInput.nextInt();
                             if (choice == 1) {
                                 System.out.println("the cost of the PHONE is = 500$");
@@ -196,9 +193,10 @@ public class Main {
                                 int quant = myInput.nextInt();
                                 if (quant > 0) {
                                     int totalpriceofcell = quant * 500;
-                                    orders.add(new Order(quant, totalpriceofcell));
+                                    String nameprod = "CELLPHONE";
+                                    orders.add(new Order(quant, totalpriceofcell , nameprod));
                                     for (Order orders1 : orders) {
-                                        System.out.println("the total price for this order = " + orders1.getTotalpriceofcell() + "$");
+                                        System.out.println("the total price for "+orders1.getNameprod()+" order = " + orders1.getTotalpriceofcell() + "$");
                                     }
                                 }
                                 if (quant == 0) {
@@ -206,18 +204,22 @@ public class Main {
                                     lol = 1;
                                 }
                             }
-                            if (choice == 2) {
-                                System.out.println("the cost of the HEADPHONES is = 200$");
+                            if (choice == 1) {
+                                System.out.println("the cost of the PHONE is = 500$");
                                 System.out.println("indicate the quantity: ");
                                 int quant = myInput.nextInt();
-                                System.out.println("the total price = " + "");
-                            }
-                            if (choice == 3) {
-                                System.out.println("the cost of the LAPTOP is = 700$");
-                                System.out.println("indicate the quantity: ");
-                                int quant = myInput.nextInt();
-                                System.out.println("the total price = " + "");
-                                System.out.println("+----------------------------------------------------------------------------+");
+                                if (quant > 0) {
+                                    int totalpriceofcell = quant * 500;
+                                    String nameprod = "CELLPHONE";
+                                    orders.add(new Order(quant, totalpriceofcell , nameprod));
+                                    for (Order orders1 : orders) {
+                                        System.out.println("the total price for "+orders1.getNameprod()+" order = " + orders1.getTotalpriceofcell() + "$");
+                                    }
+                                }
+                                if (quant == 0) {
+                                    System.out.println("you are not a good client BYE waste of my GODDAMNED time");
+                                    lol = 1;
+                                }
                             }
                             System.out.println("Do you wish to add another order?(1) for NO (0) for YES");
                             lol = myInput.nextInt();
@@ -228,10 +230,60 @@ public class Main {
                         break;
 
                     case 2:
-                        System.out.println("carrinho");
+                        System.out.println("}-CART-{");
+
+                        for (Client client : clients) {
+                            System.out.println("Nome: " + client.getName());
+                            System.out.println("Idade: " + client.getAge());
+                            List<Order> orders2 = client.getOrders();
+                            for (int y = 0; y < orders2.size(); y++) {
+                                Order orders3 = orders2.get(y);
+                                System.out.println("order: " + (y + 1) + ":");
+                                System.out.println("  quantity: " + orders2.get(y).getQuant());
+                                System.out.println("  total: " + orders2.get(y).getTotalpriceofcell());
+                                System.out.println("  name of the product : "+orders2.get(y).getNameprod());
+                            }
+                            System.out.println("+------------------------------------------------------+");
+                            System.out.println("THE TOTAL OF ORDERS = "+orders2.size());
+                            System.out.println("+------------------------------------------------------+");
+                            System.out.println("+------------------------------------------------------+");
+                        }
                         break;
                     case 3:
-                        System.out.println();
+                        System.out.println("seu pedido esta em andamento!...");
+                        for (Client client : clients) {
+                            System.out.println("Nome: " + client.getName());
+                            System.out.println("Idade: " + client.getAge());
+                            List<Order> orders2 = client.getOrders();
+                            System.out.println("THE TOTAL OF ORDERS in process = " + orders2.size());
+                        }
+                        System.out.println("+-----------------------------------------------------------------------+");
+                        Thread.sleep(10000);
+                        System.out.println("");
+                        System.out.println("YOUR ORDER HAS BEEN DELIVERED!");
+                        for (Client client : clients) {
+                            System.out.println("Nome: " + client.getName());
+                            System.out.println("Idade: " + client.getAge());
+                            List<Address> addresses1 = client.getAddresses();
+                            for (int i = 0; i < addresses1.size(); i++) {
+                                Address addresses2 = addresses1.get(i);
+                                System.out.println("Endereço: " + (i + 1) + ":");
+                                System.out.println("  Rua: " + addresses2.getStreet());
+                                System.out.println("  Número: " + addresses2.getNumb());
+                            }
+                            List<Order> orders2 = client.getOrders();
+                            for (int y = 0; y < orders2.size(); y++) {
+                                Order orders3 = orders2.get(y);
+                                System.out.println("order: " + (y + 1) + ":");
+                                System.out.println("  quantity: " + orders2.get(y).getQuant());
+                                System.out.println("  total: " + orders2.get(y).getTotalpriceofcell());
+                                System.out.println("  name of the product : "+orders2.get(y).getNameprod());
+                            }
+                            System.out.println("+------------------------------------------------------+");
+                            System.out.println("THE TOTAL OF ORDERS = "+orders2.size());
+                            System.out.println("+------------------------------------------------------+");
+                            System.out.println("+------------------------------------------------------+");
+                        }
                         break;
                     case 4:
                         System.out.printf("Closing system...");

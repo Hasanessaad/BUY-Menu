@@ -27,10 +27,11 @@ public class Client {
     public void setAddresses(List<Address> addresses) {
         this.addresses = addresses;
     }
-    Client(String name, int age,List<Address>addresses){
+    Client(String name, int age,List<Address>addresses,List<Order> orders){
         this.name = name;
         this.age = age;
         this.addresses = addresses;
+        this.orders = orders;
     }
 
     private List<Address> addresses;
